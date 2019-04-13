@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sc.dao.UserMapper" >
+  <resultMap id="BaseResultMap" type="User" >
+    <id column="ID" property="id" jdbcType="INTEGER" />
+    <result column="USER_NAME" property="userName" jdbcType="VARCHAR" />
+    <result column="USER_PASSWORD" property="userPassword" jdbcType="VARCHAR" />
+    <result column="TRUE_NAME" property="trueName" jdbcType="VARCHAR" />
+    <result column="ISDELETED" property="isdeleted" jdbcType="INTEGER" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="CREATE_USER" property="createUser" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, USER_NAME, USER_PASSWORD, TRUE_NAME, ISDELETED, CREATE_TIME, CREATE_USER
+  </sql>
+  <sql id="Base_Column_List2">
+    ID, USERNAME, USERPASSWORD, TRUENAME, ISDELETED, CREATETIME, CREATEUSER
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from tbl_user
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+  <!-- 查询所有用户 -->
+  <select id="selectAllUser" resultMap="BaseResultMap">
+  	 select
+  	 <include refid="Base_Column_List"/>
+  	 from tbl_user
+  	 where ISDELETED!=0
+  </select>
+  <!-- 查询所有用户 -->
+  <select id="selectAllUserByType" resultType="User">
+  	 select
+  	 <include refid="Base_Column_List2"/>
+  	 from tbl_user_copy
+  	 where ISDELETED!=0
+  </select>
+  
+  <!-- 根据用户名和密码查询 -->
+  <select id="selectByProtites" parameterType="User" resultType="hashmap">
+     select 
+     <include refid="Base_Column_List"/>
+     from tbl_user
+     where USER_NAME=#{userName} and USER_PASSWORD=#{userPassword}
+  </select>
+  
+  <select id="selectUserByParam" parameterType="User" resultMap="BaseResultMap">
+  	  select
+  	  <include refid="Base_Column_List"/>
+  	  from tbl_user
+  	  <where>
+  	  	<if test="userName!=null">
+  	  		USER_NAME like CONCAT(CONCAT('%', #{userName}),'%')
+  	  	</if>
+  	  	<if test="userPassword!=null">
+  	  		and USER_PASSWORD=#{userPassword}
+  	  	</if>
+  	  </where>
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from tbl_user
+    where ID = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="User" >
+    insert into tbl_user (ID, USER_NAME, USER_PASSWORD, 
+      TRUE_NAME, ISDELETED, CREATE_TIME, 
+      CREATE_USER)
+    values (#{id,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, #{userPassword,jdbcType=VARCHAR}, 
+      #{trueName,jdbcType=VARCHAR}, #{isdeleted,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{createUser,jdbcType=VARCHAR})
+  </insert>
+
+  <update id="updateByPrimaryKey" parameterType="User" >
+    update tbl_user
+    set USER_NAME = #{userName,jdbcType=VARCHAR},
+      USER_PASSWORD = #{userPassword,jdbcType=VARCHAR},
+      TRUE_NAME = #{trueName,jdbcType=VARCHAR},
+      ISDELETED = #{isdeleted,jdbcType=INTEGER},
+      CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      CREATE_USER = #{createUser,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

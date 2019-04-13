@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sc.dao.ItemBeanMapper" >
+  <resultMap id="BaseResultMap" type="com.sc.po.ItemBean" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="item_name" property="itemName" jdbcType="VARCHAR" />
+    <result column="item_num" property="itemNum" jdbcType="INTEGER" />
+    <result column="item_price" property="itemPrice" jdbcType="REAL" />
+    <result column="item_money" property="itemMoney" jdbcType="REAL" />
+  	<association property="order" javaType="OrderBean" column="order_id" select="com.sc.dao.OrderBeanMapper.selectByPrimaryKey"></association>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, order_id, item_name, item_num, item_price, item_money
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from tbl_item
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <select id="selectAllItem" resultMap="BaseResultMap">
+      select 
+         <include refid="Base_Column_List" />
+      from tbl_item
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from tbl_item
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.sc.po.ItemBean" >
+    insert into tbl_item (id, order_id, item_name, 
+      item_num, item_price, item_money
+      )
+    values (#{id,jdbcType=INTEGER}, #{orderId,jdbcType=VARCHAR}, #{itemName,jdbcType=VARCHAR}, 
+      #{itemNum,jdbcType=INTEGER}, #{itemPrice,jdbcType=REAL}, #{itemMoney,jdbcType=REAL}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.sc.po.ItemBean" >
+    insert into tbl_item
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="orderId != null" >
+        order_id,
+      </if>
+      <if test="itemName != null" >
+        item_name,
+      </if>
+      <if test="itemNum != null" >
+        item_num,
+      </if>
+      <if test="itemPrice != null" >
+        item_price,
+      </if>
+      <if test="itemMoney != null" >
+        item_money,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="orderId != null" >
+        #{orderId,jdbcType=VARCHAR},
+      </if>
+      <if test="itemName != null" >
+        #{itemName,jdbcType=VARCHAR},
+      </if>
+      <if test="itemNum != null" >
+        #{itemNum,jdbcType=INTEGER},
+      </if>
+      <if test="itemPrice != null" >
+        #{itemPrice,jdbcType=REAL},
+      </if>
+      <if test="itemMoney != null" >
+        #{itemMoney,jdbcType=REAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.sc.po.ItemBean" >
+    update tbl_item
+    <set >
+      <if test="orderId != null" >
+        order_id = #{orderId,jdbcType=VARCHAR},
+      </if>
+      <if test="itemName != null" >
+        item_name = #{itemName,jdbcType=VARCHAR},
+      </if>
+      <if test="itemNum != null" >
+        item_num = #{itemNum,jdbcType=INTEGER},
+      </if>
+      <if test="itemPrice != null" >
+        item_price = #{itemPrice,jdbcType=REAL},
+      </if>
+      <if test="itemMoney != null" >
+        item_money = #{itemMoney,jdbcType=REAL},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.sc.po.ItemBean" >
+    update tbl_item
+    set order_id = #{orderId,jdbcType=VARCHAR},
+      item_name = #{itemName,jdbcType=VARCHAR},
+      item_num = #{itemNum,jdbcType=INTEGER},
+      item_price = #{itemPrice,jdbcType=REAL},
+      item_money = #{itemMoney,jdbcType=REAL}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
